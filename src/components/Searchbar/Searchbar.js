@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { FaSearch } from 'react-icons/fa';
 import {
   SearchbarHeader,
   SearchForm,
@@ -27,9 +28,8 @@ export class Searchbar extends Component {
       <SearchbarHeader className="searchbar">
         <SearchForm onSubmit={this.handleSubmit} className="form">
           <SearchFormButton type="submit" className="button">
-            <SearchFormButtonLabel className="button-label">
-              Search
-            </SearchFormButtonLabel>
+            <SearchFormButtonLabel className="button-label"></SearchFormButtonLabel>
+            <FaSearch />
           </SearchFormButton>
 
           <SearchFormInput

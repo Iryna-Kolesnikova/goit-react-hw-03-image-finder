@@ -7,6 +7,9 @@ import { Loader } from './Loader/Loader';
 import { Modal } from './Modal/Modal';
 import { AppStyled } from './App.styled';
 import { GlobalStyle } from './Global.styled';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 export class App extends Component {
   state = {
     images: [],
@@ -38,9 +41,14 @@ export class App extends Component {
         loadMore: page < Math.ceil(totalHits / 12),
         isLoading: false,
       }));
+      if (hits.length === 0) {
+        toast.error('No results found.');
+      } else {
+        toast.success(`Found ${totalHits} images for your query.`);
+      }
     } catch (error) {
       console.error('Error fetching images:', error);
-      this.setState({ isLoading: false });
+      toast.error('Something went wrong. Please try again.');
     }
   };
 
@@ -53,15 +61,15 @@ export class App extends Component {
   };
 
   handleImageClick = largeImageURL => {
-    this.setState({ showModal: true, modalImage: largeImageURL });
+    this.setState({ showModal: true, largeImageURL: largeImageURL });
   };
 
   handleCloseModal = () => {
-    this.setState({ showModal: false, modalImage: '' });
+    this.setState({ showModal: false, largeImageURL: '' });
   };
 
   render() {
-    const { images, isLoading, showModal, modalImage } = this.state;
+    const { images, isLoading, showModal, largeImageURL } = this.state;
 
     return (
       <div>
@@ -73,10 +81,14 @@ export class App extends Component {
             <Button onClick={this.handleLoadMoreClick} />
           )}
           {showModal && (
-            <Modal largeImageURL={modalImage} onClose={this.handleCloseModal} />
+            <Modal
+              largeImageURL={largeImageURL}
+              onClose={this.handleCloseModal}
+            />
           )}
         </AppStyled>
         <GlobalStyle />
+        <ToastContainer />
       </div>
     );
   }
