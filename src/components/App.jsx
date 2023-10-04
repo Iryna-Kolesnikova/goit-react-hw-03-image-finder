@@ -39,7 +39,6 @@ export class App extends Component {
       this.setState(prevState => ({
         images: [...prevState.images, ...hits],
         loadMore: page < Math.ceil(totalHits / 12),
-        isLoading: false,
       }));
       if (hits.length === 0) {
         toast.error('No results found.');
@@ -49,6 +48,8 @@ export class App extends Component {
     } catch (error) {
       console.error('Error fetching images:', error);
       toast.error('Something went wrong. Please try again.');
+    } finally {
+      this.setState({ isLoading: false });
     }
   };
 
@@ -77,7 +78,7 @@ export class App extends Component {
           <Searchbar onSubmit={this.handleFormSubmit} />
           <ImageGallery images={images} onImageClick={this.handleImageClick} />
           {isLoading && <Loader />}
-          {images.length > 0 && !isLoading && (
+          {images.length > 0 && !isLoading && images.length % 12 === 0 && (
             <Button onClick={this.handleLoadMoreClick} />
           )}
           {showModal && (

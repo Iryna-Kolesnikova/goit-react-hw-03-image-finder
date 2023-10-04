@@ -1,21 +1,31 @@
+import { useEffect } from 'react';
 import { Overlay, ModalOverlay } from './Modal.styled';
-import * as basicLightbox from 'basiclightbox';
+
 export const Modal = ({ largeImageURL, onClose }) => {
+  useEffect(() => {
+    const handleEscape = el => {
+      if (el.code === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleEscape);
+
+    return () => {
+      window.removeEventListener('keydown', handleEscape);
+    };
+  }, [onClose]);
+
+  const handleClick = el => {
+    if (el.target === el.currentTarget) {
+      onClose();
+    }
+  };
+
   if (!largeImageURL) {
     return null;
   }
-  const content = `<Overlay className="overlay" onClick={onClose}>
-      <div class="modal">
-        <img src=${largeImageURL} alt="" />
-      </div>
-    `;
-  const instance = basicLightbox.create(content);
-  const handleCloseModal = () => {
-    instance.close();
-    onClose();
-  };
   return (
-    <Overlay className="overlay" onClick={handleCloseModal}>
+    <Overlay className="overlay" onClick={handleClick}>
       <ModalOverlay className="modal">
         <img src={largeImageURL} alt="" />
       </ModalOverlay>
